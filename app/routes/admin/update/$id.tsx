@@ -1,15 +1,27 @@
-import { json, LoaderArgs } from '@remix-run/node';
+import { json, LoaderArgs, redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import invariant from 'tiny-invariant';
+import { authCookie, verifyAuthCookie } from '~/admin.server';
 import { getPostPrisma } from '~/models/post.server';
 
-export async function loader({ params }: LoaderArgs) {
-  invariant(params.id, `params.id is required`);
+export async function loader({ params, request }: LoaderArgs) {
+  const cookieHeader = request.headers.get('Cookie');
+  const cookie: { token: string } | null = await authCookie.parse(cookieHeader);
 
-  const post = await getPostPrisma(params.id);
-  invariant(post, `post not found: ${params.id}`);
+  if (cookie) {
+    if (await verifyAuthCookie(cookie)) {
+      invariant(params.id, `params.id is required`);
 
-  return json({ post });
+      const post = await getPostPrisma(params.id);
+      invariant(post, `post not found: ${params.id}`);
+
+      return json({ post });
+    }
+
+    return redirect('/admin/login');
+  }
+
+  return redirect('/admin/login');
 }
 
 export default function AdminPostUpdate() {
