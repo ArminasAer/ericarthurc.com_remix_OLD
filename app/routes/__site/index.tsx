@@ -1,7 +1,6 @@
+import { getPostsRedis } from '~/models/post.server';
 import { json } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
-
-import { getPostsRedis } from '~/models/post.server';
 
 export async function loader() {
   return json({ posts: await getPostsRedis() });

@@ -1,11 +1,12 @@
-import { Post } from '@prisma/client';
 import { createClient } from 'redis';
+
+import { Post } from '@prisma/client';
+
 import { getPostsPrisma } from './models/post.server';
 
 const redisClient = createClient();
 
-// currently crashing the whole app on error
-// maybe we can fallback to prisma if redis errors
+// TODO: currently crashing the whole app on error maybe we can fallback to prisma if redis errors
 redisClient.on('error', (err) => {
   console.log('redis error', err);
   process.exit(1);

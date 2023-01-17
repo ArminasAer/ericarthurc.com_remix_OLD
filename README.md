@@ -1,6 +1,6 @@
 ## Ericarthurc.com
 
-Project version: `0.1.0 alpha | 1/13/2023`
+Project version: `0.2.0 alpha | 1/16/2023`
 
 ### Currently built with [Remix](https://remix.run/)
 

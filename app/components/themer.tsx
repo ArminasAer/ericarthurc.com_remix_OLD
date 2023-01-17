@@ -2,8 +2,6 @@ import React from 'react';
 
 export default function Themer() {
   React.useEffect(() => {
-    console.log('hi');
-
     let theme = localStorage.getItem('theme');
     let themeSwitcherInput: HTMLInputElement | null =
       document.querySelector('#themeSwitch');

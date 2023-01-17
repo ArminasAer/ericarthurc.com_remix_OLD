@@ -1,14 +1,14 @@
-import { prisma } from '../db.server';
 import type { Post } from '@prisma/client';
 
-import { getPostCacheParsed } from '../redis';
+import { prisma } from '../db.server';
+import { getPostCacheParsed } from '../redis.server';
 
 export async function getPostsPrisma() {
   return prisma.post.findMany();
 }
 
-export async function getPostPrisma(slug: string) {
-  return prisma.post.findUnique({ where: { slug } });
+export async function getPostPrisma(id: string) {
+  return prisma.post.findUnique({ where: { id } });
 }
 
 export async function createPostPrisma() {}

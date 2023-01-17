@@ -1,10 +1,11 @@
-import path from 'path';
+import compression from 'compression';
 import express from 'express';
 import morgan from 'morgan';
-import compression from 'compression';
+import path from 'path';
+
 import { createRequestHandler } from '@remix-run/express';
 
-import { redisStartupCache } from './app/redis';
+import { redisStartupCache } from './app/redis.server';
 
 const BUILD_DIR = path.join(process.cwd(), 'build');
 
