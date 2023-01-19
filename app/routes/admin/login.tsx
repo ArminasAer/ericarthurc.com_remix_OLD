@@ -6,18 +6,10 @@ import {
   verifyLoginCredentials,
 } from '~/admin.server';
 import { Form, Link, useActionData, useSearchParams } from '@remix-run/react';
-import * as React from 'react';
 
 export async function loader({ request }: LoaderArgs) {
-  const cookieHeader = request.headers.get('Cookie');
-  const parsedCookie: { token: string } | null = await authCookie.parse(
-    cookieHeader
-  );
-
-  if (parsedCookie) {
-    if (await verifyAuthCookie(parsedCookie)) {
-      return redirect('/admin');
-    }
+  if (await verifyAuthCookie(request)) {
+    return redirect('/admin');
   }
 
   return json({});
@@ -43,8 +35,6 @@ export async function action({ request }: ActionArgs) {
   }
 
   if (verifyLoginCredentials(password, pin)) {
-    console.log('here');
-
     return createAuthCookie(password, pin);
   }
 

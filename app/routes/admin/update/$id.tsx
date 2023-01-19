@@ -5,23 +5,15 @@ import { authCookie, verifyAuthCookie } from '~/admin.server';
 import { getPostPrisma } from '~/models/post.server';
 
 export async function loader({ params, request }: LoaderArgs) {
-  const cookieHeader = request.headers.get('Cookie');
-  const cookie: { token: string } | null = await authCookie.parse(cookieHeader);
-
-  if (cookie) {
-    if (await verifyAuthCookie(cookie)) {
-      invariant(params.id, `params.id is required`);
-
-      const post = await getPostPrisma(params.id);
-      invariant(post, `post not found: ${params.id}`);
-
-      return json({ post });
-    }
-
+  if (!(await verifyAuthCookie(request))) {
     return redirect('/admin/login');
   }
+  invariant(params.id, `params.id is required`);
 
-  return redirect('/admin/login');
+  const post = await getPostPrisma(params.id);
+  invariant(post, `post not found: ${params.id}`);
+
+  return json({ post });
 }
 
 export default function AdminPostUpdate() {

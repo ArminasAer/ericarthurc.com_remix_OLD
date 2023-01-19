@@ -6,12 +6,12 @@ const SECRET_BUFFER = Buffer.from(<string>process.env.JWT_SECRET, 'hex');
 const ISSUER = <string>process.env.JWT_ISSUER;
 const EXP = <string>process.env.JWT_EXP;
 
-export interface AUTHPayload {
+interface AUTHPayload {
   password: string;
   pin: string;
 }
 
-export async function generateEncrpytedJwt(customClaims: AUTHPayload) {
+async function generateEncrpytedJwt(customClaims: AUTHPayload) {
   return new jose.EncryptJWT({ customClaims })
     .setProtectedHeader({
       alg: 'dir',
@@ -23,7 +23,7 @@ export async function generateEncrpytedJwt(customClaims: AUTHPayload) {
     .encrypt(SECRET_BUFFER);
 }
 
-export async function decryptJwt(jwt: any) {
+async function decryptJwt(jwt: any) {
   const options = {
     issuer: ISSUER,
     contentEncryptionAlgorithms: ['A256GCM'],
@@ -57,14 +57,28 @@ export async function createAuthCookie(password: string, pin: string) {
   });
 }
 
-export async function verifyAuthCookie(parsedCookie: { token: string }) {
-  const decrypt = await decryptJwt(parsedCookie.token);
-  const auth = decrypt.payload.customClaims as AUTHPayload;
-
-  return (
-    auth.password === process.env.ADMIN_PASSWORD &&
-    auth.pin === process.env.ADMIN_PIN
+export async function verifyAuthCookie(request: Request) {
+  const cookieHeader = request.headers.get('Cookie');
+  const parsedCookie: { token: string } | null = await authCookie.parse(
+    cookieHeader
   );
+
+  if (parsedCookie) {
+    const decrypt = await decryptJwt(parsedCookie.token);
+    const auth = decrypt.payload.customClaims as AUTHPayload;
+
+    if (
+      !(
+        auth.password === process.env.ADMIN_PASSWORD &&
+        auth.pin === process.env.ADMIN_PIN
+      )
+    ) {
+      return false;
+    }
+  } else {
+    return false;
+  }
+  return true;
 }
 
 export function verifyLoginCredentials(password: string, pin: string) {

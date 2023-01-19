@@ -15,7 +15,8 @@
     text-align: center;
     justify-items: center;
     align-items: center;
-    width: 210px;
+    // width: 210px;
+    width: 240px;
     margin-left: 15px;
     margin-right: 15px;
     margin-bottom: 25px;
@@ -29,7 +30,7 @@
     background: var(--meta-anchor-background);
     border: var(--meta-anchor-border-color) 1px solid;
     border-radius: 0.25rem;
-    width: 210px;
+    width: 100%;
     min-height: 40px;
     text-align: center;
     padding: 12px 0;
@@ -43,7 +44,6 @@
 
 .card-header-info {
     display: grid;
-    row-gap: 4px;
 }
 
 .card-title {
@@ -63,7 +63,7 @@
 }
 
 .card-date {
-    margin-top: 3px;
+    margin-top: 6px;
     padding: 0 3%;
     font-size: 16px;
     color: var(--meta-info-date-color);
@@ -76,7 +76,6 @@
     row-gap: 6px;
     column-gap: 6px;
     justify-content: center;
-    max-width: 325px;
 }
 
 .card-category {

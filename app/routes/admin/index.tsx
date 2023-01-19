@@ -1,4 +1,4 @@
-import { authCookie, verifyAuthCookie } from '~/admin.server';
+import { verifyAuthCookie } from '~/admin.server';
 import { ActionArgs, LoaderArgs, redirect } from '@remix-run/node';
 import { getPostsPrisma } from '~/models/post.server';
 import { Form, useLoaderData } from '@remix-run/react';
@@ -6,18 +6,10 @@ import { json } from '@remix-run/node';
 import { safeRedirect } from '~/utils';
 
 export async function loader({ request }: LoaderArgs) {
-  const cookieHeader = request.headers.get('Cookie');
-  const cookie: { token: string } | null = await authCookie.parse(cookieHeader);
-
-  if (cookie) {
-    if (await verifyAuthCookie(cookie)) {
-      return json({ posts: await getPostsPrisma() });
-    }
-
+  if (!(await verifyAuthCookie(request))) {
     return redirect('/admin/login');
   }
-
-  return redirect('/admin/login');
+  return json({ posts: await getPostsPrisma() });
 }
 
 export async function action({ request }: ActionArgs) {
